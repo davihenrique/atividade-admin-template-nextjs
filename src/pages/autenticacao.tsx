@@ -5,7 +5,7 @@ import { IconeAtencao } from "../components/icons";
 import useAuth from "../data/hook/useAuth";
 
 export default function Autenticacao() {
-  const { usuario, loginGoogle } = useAuth();
+  const { cadastrar, login, loginGoogle } = useAuth();
   const [modo, setModo] = useState<"login" | "cadastro">("login");
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
@@ -16,13 +16,15 @@ export default function Autenticacao() {
     setTimeout(() => setError(null), tempoEmSegundos * 1000);
   }
 
-  function submeter() {
-    if (modo === "login") {
-      console.log("login");
-      exibirError("Ocorreu um erro no login", 2);
-    } else {
-      console.log("cadastrar");
-      exibirError("Ocorreu um erro no Cadastrar");
+  async function submeter() {
+    try {
+      if (modo === "login") {
+        await login(email, senha);
+      } else {
+        await cadastrar(email, senha);
+      }
+    } catch (e) {
+      exibirError(e?.message ?? "Erro desconhecido!");
     }
   }
 
